@@ -1,8 +1,13 @@
+import os
+
 starred = ""
 usedletters = []
 guesses = 0
+allowed_chars = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','1','2','3','4','5','6','7','8','9','10','0']
+
 
 def hangman_graphic(guesses):
+	
 	if guesses == 0:
 		print "________      "
 		print "|      |      "
@@ -45,7 +50,7 @@ def hangman_graphic(guesses):
 		print "|     /|\     "
 		print "|     /       "
 		print "|             "
-	else:
+	elif guesses == 6:
 		print "________      "
 		print "|      |      "
 		print "|      0      "
@@ -54,27 +59,49 @@ def hangman_graphic(guesses):
 		print "|             "
 		print "The noose tightens around your neck"
 		print "GAME OVER!"
+		raise SystemExit
 
 def read_input():
+
+	global guesses
+
 	print("Your guess? (1 letter)")
-	inp = raw_input("")
+	r_inp = raw_input("")
+	inp = inputcheck(r_inp)
 	if len(inp) > 1:
-		print("Error. Type only one letter!")
+		os.system('cls' if os.name == 'nt' else 'clear')
+		hangman_graphic(guesses)
+		printused(usedletters)
+		print("Error. Type only one letter!\n")
+		print starred
 		read_input()
 	else:
 		if inp in usedletters:
+			#os.system('cls' if os.name == 'nt' else 'clear')
+			hangman_graphic(guesses)
+
 			print("\nYou already tried this letter. Try a different one!")
-			read_input()
+			guesses -= 1
 		else:
+			os.system('cls' if os.name == 'nt' else 'clear')
+			hangman_graphic(guesses)
 			guesses_this_far(inp)
 			return inp
+
+def inputcheck(inp):
+	inp = inp.lower()
+	return inp
+
+def printused(used):
+	global usedletters
+	print ', '.join(usedletters)
 
 def repl_inp(inpt, answer):
 	global starred
 	global guesses
 	okay = 0
-	print usedletters
 	print "\n"
+	#print "\n"
 	for x in range(0,len(answer)):
 		if(answer[x] == inpt):
 			starred = starred[:x] + inpt + starred[x+1:]
@@ -82,10 +109,12 @@ def repl_inp(inpt, answer):
 			okay = 1
 	if okay == 0:
 		guesses += 1
+		os.system('cls' if os.name == 'nt' else 'clear')
 		hangman_graphic(guesses)
+		printused(usedletters)
 		print "\n"
 	print starred
-	if guesses > 5:
+	if guesses > 6:
 		raise SystemExit
 
 def guessed():
@@ -107,7 +136,10 @@ def game(answer):
 def starring(answer):
 	global starred
 	for x in range(0,len(answer)):
-		starred = starred[:x] + "*" + starred[x+1:]
+		if(answer[x] == " "):
+			starred = starred[:x] + " " + starred[x+1:]
+		else:
+			starred = starred[:x] + "*" + starred[x+1:]
 
 def guesses_this_far(inp):
 	match = 0
@@ -117,10 +149,13 @@ def guesses_this_far(inp):
 			match = 1
 	if match == 0:
 		usedletters.append(inp)
+	printused(usedletters)
 
 
 print("Pregame:\nEnter the word you'd like to be guessed:")
-answer = raw_input("")
+r_answer = raw_input("")
+answer = inputcheck(r_answer)
+os.system('cls' if os.name == 'nt' else 'clear')
 starring(answer)
 
 game(answer)
