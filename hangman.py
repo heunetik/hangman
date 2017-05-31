@@ -97,15 +97,11 @@ def printused():
 
 def guesses_this_far(inp):
 	
-	match = 0
 	global usedletters
 	for x in range(0,len(usedletters)):
 		if usedletters[x] == inp:
-			match = 1
-	if match == 0:
-		return 0
-	else:
-		return 1
+			return 1
+	return 0
 
 def repl_inp(nput, answer):
 	global starred
@@ -186,3 +182,18 @@ starring(answer)
 #parsed input:
 game(answer)
 #os.system('cls' if os.name == 'nt' else 'clear')
+
+'''
+import random
+import re
+
+def random_line(afile):
+    line = next(afile)
+    for num, aline in enumerate(afile):
+      if random.randrange(num + 2): continue
+      	line = aline
+    return line
+
+with open('thewords.txt','r') as f:
+	print random_line(f)
+'''
