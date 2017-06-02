@@ -1,10 +1,11 @@
 import os
+import random
+import re
 
 starred = ""
 answer = ""
 error = ""
 usedletters = []
-allowed_chars = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','1','2','3','4','5','6','7','8','9','10','0']
 
 guesses = 0
 
@@ -63,6 +64,20 @@ def hangman_graphic(guesses):
 		print "GAME OVER!"
 		print "The word was: \n 	" + answer
 		raise SystemExit
+
+
+
+def random_line(afile):
+    line = next(afile)
+    for num, aline in enumerate(afile):
+    	if random.randrange(num + 2) or not re.match("^[a-zA-Z]*$", aline): continue
+    	line = aline
+    line = line[:-1]
+    return line
+
+def return_r_line():
+	with open('words.txt','r') as f:
+		return random_line(f)
 
 def starring(answer):
 	global starred
@@ -139,6 +154,7 @@ def read_input():
 	r_inp = raw_input("")
 	inp = inputcheck(r_inp)
 	os.system('cls' if os.name == 'nt' else 'clear')
+	
 	if guesses_this_far(inp) == 1:
 		error = "This char has already been used"
 		guesses -= 1
@@ -154,6 +170,21 @@ def win():
 	hangman_graphic(guesses)
 	print printused()
 	print "\nCongrats! You guessed it! The word was: \n 	" + answer
+
+def gamemode(r_answer1):
+	print "Would you like to put in a word to be guessed, or should I give you a random word?"
+	print "1) - Randomize it!"
+	print "2) - Let me choose"
+
+	reply = int(raw_input(""))
+	if reply == 1:
+		r_answer1 = return_r_line()
+	else:
+		os.system('cls' if os.name == 'nt' else 'clear')
+		print "Input the word you'd like to be guessed:"
+		r_answer1 = raw_input("")
+
+	return r_answer1
 
 def game(answer):
 
@@ -171,29 +202,14 @@ def game(answer):
 		print starred
 	win()
 
-print("Pregame:\nEnter the word you'd like to be guessed:")
-r_answer = raw_input("")
+r_answer = ""
+r_answer = gamemode(r_answer)
+
+
 answer = inputcheck(r_answer)
 os.system('cls' if os.name == 'nt' else 'clear')
 
 
 starring(answer)
 
-#parsed input:
 game(answer)
-#os.system('cls' if os.name == 'nt' else 'clear')
-
-'''
-import random
-import re
-
-def random_line(afile):
-    line = next(afile)
-    for num, aline in enumerate(afile):
-      if random.randrange(num + 2): continue
-      	line = aline
-    return line
-
-with open('thewords.txt','r') as f:
-	print random_line(f)
-'''
